@@ -8,13 +8,6 @@
         input { margin: 5px 0; width: 200px; }
         .result { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px; }
         .style-option { margin: 10px 0; }
-        .alert {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #ffcccb;
-            border-radius: 5px;
-            display: none; /* ซ่อนไว้จนกว่าจะแสดง */
-        }
     </style>
 </head>
 <body>
@@ -68,9 +61,6 @@
         
         <!-- ผลลัพธ์ -->
         <div class="result" id="result"></div>
-
-        <!-- ข้อความแจ้งเตือน -->
-        <div class="alert" id="alertMessage">ควรเพิ่ม Output ปรับ %EFF</div>
     </div>
 
     <script>
@@ -128,14 +118,8 @@
             // ตรวจสอบเงื่อนไขจุดทศนิยม
             const decimalPart = eff - Math.floor(eff); // หาส่วนทศนิยม
             if (decimalPart >= 0.69999 && decimalPart <= 0.99999) {
-                // แสดงข้อความแจ้งเตือน
-                const alertMessage = document.getElementById('alertMessage');
-                alertMessage.style.display = 'block';
-
-                // ปิดข้อความหลังจาก 3 วินาที
-                setTimeout(() => {
-                    alertMessage.style.display = 'none';
-                }, 6000); // 3 วินาที = 3000 มิลลิวินาที
+                // แสดง Alert Box
+                alert("ควรเพิ่ม Output เพื่อปรับ %EFF");
             }
         }
     </script>
