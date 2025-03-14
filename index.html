@@ -7,15 +7,45 @@
         .container { max-width: 600px; margin: auto; }
         input { margin: 5px 0; width: 200px; }
         .result { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px; }
+        .style-option { margin: 10px 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>คำนวณประสิทธิภาพรายวัน</h1>
         <form id="calcForm">
-            <label>SAM Style :</label><br>
-            <input type="number" step="0.01" id="sam" required><br>
-            
+            <!-- เลือกจำนวน Style -->
+            <div class="style-option">
+                <label>เลือกจำนวน Style:</label><br>
+                <input type="radio" id="style1" name="styleOption" value="1" checked onclick="toggleStyleFields()"> 1 Style<br>
+                <input type="radio" id="style2" name="styleOption" value="2" onclick="toggleStyleFields()"> 2 Style<br>
+            </div>
+
+            <!-- ฟิลด์สำหรับ 1 Style -->
+            <div id="style1Fields">
+                <label>SAM Style:</label><br>
+                <input type="number" step="0.01" id="sam" required><br>
+                
+                <label>ผลผลิตที่เย็บได้/วัน:</label><br>
+                <input type="number" id="actual" required><br>
+            </div>
+
+            <!-- ฟิลด์สำหรับ 2 Style -->
+            <div id="style2Fields" style="display: none;">
+                <label>SAM Style ที่ 1:</label><br>
+                <input type="number" step="0.01" id="sam1" required><br>
+                
+                <label>SAM Style ที่ 2:</label><br>
+                <input type="number" step="0.01" id="sam2" required><br>
+                
+                <label>ผลผลิตที่เย็บได้/วัน ที่ 1:</label><br>
+                <input type="number" id="actual1" required><br>
+                
+                <label>ผลผลิตที่เย็บได้/วัน ที่ 2:</label><br>
+                <input type="number" id="actual2" required><br>
+            </div>
+
+            <!-- ฟิลด์ทั่วไป -->
             <label>จำนวนคนทำงานปกติ (8 ชม.):</label><br>
             <input type="number" id="normalPeople" required><br>
             
@@ -25,38 +55,65 @@
             <label>ชั่วโมง OT/วัน (ใส่เฉพาะ ชม.โอที):</label><br>
             <input type="number" id="otHours" required><br>
             
-            <label>ผลผลิตที่เย็บได้/วัน:</label><br>
-            <input type="number" id="actual" required><br>
-            
+            <!-- ปุ่มคำนวณ -->
             <button type="button" onclick="calculate()" style="margin-top:10px;">คำนวณ</button>
         </form>
         
+        <!-- ผลลัพธ์ -->
         <div class="result" id="result"></div>
     </div>
 
     <script>
+        // ฟังก์ชันสำหรับสลับแสดงฟิลด์ตามจำนวน Style ที่เลือก
+        function toggleStyleFields() {
+            const style1Fields = document.getElementById('style1Fields');
+            const style2Fields = document.getElementById('style2Fields');
+            const style1Option = document.getElementById('style1').checked;
+
+            if (style1Option) {
+                style1Fields.style.display = 'block';
+                style2Fields.style.display = 'none';
+            } else {
+                style1Fields.style.display = 'none';
+                style2Fields.style.display = 'block';
+            }
+        }
+
+        // ฟังก์ชันคำนวณประสิทธิภาพ
         function calculate() {
-            const sam = parseFloat(document.getElementById('sam').value);
             const normalPeople = parseFloat(document.getElementById('normalPeople').value);
             const otPeople = parseFloat(document.getElementById('otPeople').value);
             const otHours = parseFloat(document.getElementById('otHours').value);
-            const actual = parseFloat(document.getElementById('actual').value);
 
             // คำนวณ Total Time (นาที)
             const totalTime = (normalPeople * 8 * 60) + (otPeople * otHours * 60);
 
-            // คำนวณ Expected Output
-            const expected = totalTime / sam;
+            let eff;
+            if (document.getElementById('style1').checked) {
+                // กรณี 1 Style
+                const sam = parseFloat(document.getElementById('sam').value);
+                const actual = parseFloat(document.getElementById('actual').value);
 
-            // คำนวณประสิทธิภาพ (%EFF)
-            const eff = (actual / expected) * 100;
+                const expected = totalTime / sam;
+                eff = (actual / expected) * 100;
+            } else {
+                // กรณี 2 Style
+                const sam1 = parseFloat(document.getElementById('sam1').value);
+                const sam2 = parseFloat(document.getElementById('sam2').value);
+                const actual1 = parseFloat(document.getElementById('actual1').value);
+                const actual2 = parseFloat(document.getElementById('actual2').value);
+
+                const totalOutput = (actual1 * sam1) + (actual2 * sam2);
+                eff = (totalOutput / totalTime) * 100;
+            }
 
             // แสดงผลลัพธ์
             document.getElementById('result').innerHTML = `
                 <h3>ผลลัพธ์:</h3>
                 <p>ประสิทธิภาพ: <strong>${eff.toFixed(2)}%</strong></p>
                 <h3>__ตัวอย่าง__</h3>
-                                <p>ประสิทธิภาพ:อยู่ในช่วง 65.79 % ควรเพิ่มงานขึ้นเป็น 66.00%</p>
+                <p>ประสิทธิภาพ:อยู่ในช่วง 65.39 % ควรเพิ่มงานขึ้นเป็น 65.50%</p>
+                <p>ประสิทธิภาพ:อยู่ในช่วง 65.79 % ควรเพิ่มงานขึ้นเป็น 66.00%</p>
             `;
         }
     </script>
