@@ -70,6 +70,9 @@
             const style2Fields = document.getElementById('style2Fields');
             const style1Option = document.getElementById('style1').checked;
 
+            // เคลียร์ค่าทั้งหมดในฟิลด์
+            clearFields();
+
             if (style1Option) {
                 style1Fields.style.display = 'block';
                 style2Fields.style.display = 'none';
@@ -77,6 +80,35 @@
                 style1Fields.style.display = 'none';
                 style2Fields.style.display = 'block';
             }
+
+            // แสดงผลลัพธ์ใหม่
+            showResult();
+        }
+
+        // ฟังก์ชันเคลียร์ค่าทั้งหมดในฟิลด์
+        function clearFields() {
+            // เคลียร์ค่าฟิลด์สำหรับ 1 Style
+            document.getElementById('sam').value = '';
+            document.getElementById('actual').value = '';
+
+            // เคลียร์ค่าฟิลด์สำหรับ 2 Style
+            document.getElementById('sam1').value = '';
+            document.getElementById('sam2').value = '';
+            document.getElementById('actual1').value = '';
+            document.getElementById('actual2').value = '';
+
+            // เคลียร์ค่าฟิลด์ทั่วไป (ถ้าต้องการ)
+            document.getElementById('normalPeople').value = '';
+            document.getElementById('otPeople').value = '';
+            document.getElementById('otHours').value = '';
+        }
+
+        // ฟังก์ชันแสดงผลลัพธ์
+        function showResult() {
+            document.getElementById('result').innerHTML = `
+                <h3>ผลลัพธ์:</h3>
+                <p>กรุณากรอกข้อมูลและกด "คำนวณ" เพื่อดูผลลัพธ์</p>
+            `;
         }
 
         // ฟังก์ชันคำนวณประสิทธิภาพ
